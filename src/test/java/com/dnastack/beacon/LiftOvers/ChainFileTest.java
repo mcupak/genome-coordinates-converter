@@ -1,14 +1,17 @@
 package com.dnastack.beacon.LiftOvers;
 
 
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by patrickmagee on 2016-05-26.
@@ -16,7 +19,14 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class ChainFileTest {
 
-    @Test( expected = IllegalArgumentException.class)
+    private static final String FILE_NAME = "hg38ToHg19.over.chain";
+    private static final String FILE_PATH = "src/main/resources/chains/hg38/" + FILE_NAME;
+    private static final String URL_FROM_REMOTE = "http://hgdownload.cse.ucsc.edu/goldenPath/hg38/liftOver/hg38ToHg19.over.chain.gz";
+    private static final String INVALID_URL = "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg38ToHg19.over.chain.gz";
+    private static final String BUIILD_FROM = "hg38";
+    private static final String BUILD_TO = "hg19";
+
+    @Test(expected = IllegalArgumentException.class)
     public void testLeftNullGenomeBuild() {
         try {
             new ChainFile(null, GenomeBuild.HG17);
@@ -32,6 +42,8 @@ public class ChainFileTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
     @Test(expected = NullPointerException.class)
@@ -43,6 +55,84 @@ public class ChainFileTest {
     @Test(expected = IOException.class)
     public void testInvalidGenomeBuildCombination() throws Exception {
         new ChainFile(GenomeBuild.HG38, GenomeBuild.HG17);
+    }
+
+
+    @Test
+    public void testFromFile() throws IOException {
+
+        File file = new File(FILE_PATH);
+        ChainFile chainFile = ChainFile.fromFile(file, BUIILD_FROM, BUILD_TO);
+        assertEquals(chainFile.getName(), FILE_NAME);
+        assertEquals(chainFile.isFile(), true);
+        assertEquals(chainFile.getBuildFrom(), BUIILD_FROM);
+        assertEquals(chainFile.getBuildTo(), BUILD_TO);
+
+    }
+
+    @Test
+    public void testFromURL() throws IOException {
+        final URL url = new URL(URL_FROM_REMOTE);
+        ChainFile chainFile = ChainFile.fromUrl(url, BUIILD_FROM, BUILD_TO);
+        assertEquals(chainFile.isFile(), true);
+
+        InputStream stream = new FileInputStream(chainFile);
+        InputStream compareStream = new FileInputStream(new File(FILE_PATH));
+
+        ReadableByteChannel remoteChannel = Channels.newChannel(stream);
+        ReadableByteChannel compareChannel = Channels.newChannel(compareStream);
+
+        ByteBuffer remoteBuffer = ByteBuffer.allocateDirect(1024);
+        ByteBuffer compareBuffer = ByteBuffer.allocateDirect(1024);
+
+        try {
+            while (true) {
+                int readRemote = remoteChannel.read(remoteBuffer);
+                int readCompare = compareChannel.read(compareBuffer);
+
+                if (readRemote == -1 || readCompare == -1) {
+                    assertEquals(readRemote, readCompare);
+                    return;
+                }
+
+                remoteBuffer.flip();
+                compareBuffer.flip();
+
+                for (int i = 0; i < Math.min(readRemote, readCompare); i++) {
+                    assertEquals(remoteBuffer.get(), compareBuffer.get());
+                }
+                remoteBuffer.compact();
+                compareBuffer.compact();
+
+            }
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+            if (compareStream != null) {
+                compareStream.close();
+            }
+        }
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void testFromURLERROR() throws IOException {
+        final URL url = new URL(INVALID_URL);
+        ChainFile.fromUrl(url, BUIILD_FROM, BUILD_TO);
+
+    }
+
+    @Test
+    public void testFromUCSCRemote() throws IOException {
+        ChainFile chainFile = ChainFile.fromUCSCRemote(BUIILD_FROM, BUILD_TO, FILE_NAME + ".gz");
+        assertEquals(chainFile.getBuildTo(), BUILD_TO);
+        assertEquals(chainFile.getBuildFrom(), BUIILD_FROM);
+
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void testFromUCSCRemoteError() throws IOException {
+        ChainFile chainFile = ChainFile.fromUCSCRemote("ERROR", BUIILD_FROM, FILE_NAME + ".gz");
     }
 
 
