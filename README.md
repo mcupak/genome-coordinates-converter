@@ -5,7 +5,7 @@ Java wrapper for performing liftOvers on genomic coordinates. The wrapper provid
 
 ## Requirements
 
-- Java version 8
+- Java 8
 
 
 ## Chain Files
@@ -16,10 +16,8 @@ LiftOvers can be performed easily by either using the predefined liftovers, or b
 ## Basic Usage
 
 ```java
-    //Go From hg19 to hg38
-    
     try {
-        IntervalLiftOver intervalLiftOver = IntervalLiftOver.hg19ToHg38();
+        LiftOver intervalLiftOver = UCSCLiftOver.hg19ToHg38();
         Interval newInterval = intervalLiftOver.liftOver("chr1",743267,743268);
     } catch(LiftOverException e){
         e.printStackTrace();
@@ -32,15 +30,13 @@ LiftOvers can be performed easily by either using the predefined liftovers, or b
 ## Using a Custom Chain File
 
 ```java
-   
    try {
-   
        String path = "/path/to/customChainFile";
        String from = "mm9";
        String to = "mm10";
     
-       ChainFile chainFile = new ChainFile(path, from, to);
-       IntervalLiftOver intervalLiftOver = new IntervalLiftOver(chainFile);
+       ChainFile chainFile = new UCSCChainFile(path, from, to);
+       LiftOver intervalLiftOver = new UCSCLiftOver(chainFile);
        Interval newInterval = intervalLiftOver.liftOver("chr1",7724,8662);
    } catch(LiftOverException e){
         e.printStackTrace();
