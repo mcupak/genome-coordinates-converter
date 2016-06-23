@@ -1,31 +1,23 @@
 /*
- * The MIT License
+ * Copyright 2016 DNAstack
  *
- * Copyright 2014 DNAstack.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.dnastack.beacon.liftover.ucsc;
 
+import com.dnastack.beacon.liftover.api.ChainFile;
 import com.dnastack.beacon.liftover.util.GenomeBuild;
 import com.dnastack.beacon.liftover.util.LiftOverException;
-import com.dnastack.beacon.liftover.api.ChainFile;
 import htsjdk.samtools.liftover.LiftOver;
 import htsjdk.samtools.util.Interval;
 
@@ -33,9 +25,10 @@ import java.io.IOException;
 
 /**
  * <p>UCSCLiftOver</p>
- *
+ * <p>
  * UCSCLiftOver is a conveience wrapper around htsjdk liftOver. The implementation is the same, however
  * it provides easy methods for the user to implement the liftOver tool.
+ *
  * @author patrickmagee
  */
 public class UCSCLiftOver implements com.dnastack.beacon.liftover.api.LiftOver {
@@ -43,11 +36,11 @@ public class UCSCLiftOver implements com.dnastack.beacon.liftover.api.LiftOver {
     private final ChainFile chainFile;
     private final LiftOver liftOverContainer;
 
-
     /**
      * Constructor for creating the UCSCLiftOver Object. Uses chain files in resources
+     *
      * @param from Starting GenomeBuild version.
-     * @param to Target GenomeBuild version
+     * @param to   Target GenomeBuild version
      * @throws IOException
      */
     public UCSCLiftOver(GenomeBuild from, GenomeBuild to) throws IOException {
@@ -58,13 +51,13 @@ public class UCSCLiftOver implements com.dnastack.beacon.liftover.api.LiftOver {
         liftOverContainer = new LiftOver(chainFile);
     }
 
-
     /**
      * Constructor for creating the UCSCLiftOver Object. Uses a custom defined ChainFIle
+     *
      * @param chainFile Chainfile to use for liftover
      */
-    public UCSCLiftOver(ChainFile chainFile){
-        if (chainFile == null){
+    public UCSCLiftOver(ChainFile chainFile) {
+        if (chainFile == null) {
             throw new IllegalArgumentException("Chainfile cannot be null");
         }
         this.chainFile = chainFile;
@@ -86,7 +79,6 @@ public class UCSCLiftOver implements com.dnastack.beacon.liftover.api.LiftOver {
         Interval interval = new Interval(contig, start, end);
         return liftOver(interval);
     }
-
 
     /**
      * {@inheritDocs}

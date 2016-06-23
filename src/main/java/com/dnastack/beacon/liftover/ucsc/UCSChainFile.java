@@ -1,31 +1,22 @@
 /*
- * The MIT License
+ * Copyright 2016 DNAstack
  *
- * Copyright 2014 DNAstack.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.dnastack.beacon.liftover.ucsc;
 
-
-import com.dnastack.beacon.liftover.util.GenomeBuild;
 import com.dnastack.beacon.liftover.api.ChainFile;
+import com.dnastack.beacon.liftover.util.GenomeBuild;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,11 +46,10 @@ public class UCSChainFile extends ChainFile {
     public UCSChainFile(GenomeBuild from, GenomeBuild to) throws IOException {
         super(getChainFilePath(from, to), from, to);
 
-        if (!this.exists()) {
+        if (!exists()) {
             throw new IOException("File does not exist");
         }
     }
-
 
     /**
      * Constructor for the ChainFile. Points to a chainfile outside the resources folder
@@ -74,7 +64,7 @@ public class UCSChainFile extends ChainFile {
         if (from == null || to == null) {
             throw new IllegalArgumentException("GenomeBuilds cannot be null");
         }
-        if (!this.exists()) {
+        if (!exists()) {
             throw new IOException("File Does not exist");
         }
     }
@@ -89,11 +79,11 @@ public class UCSChainFile extends ChainFile {
      * @throws IOException
      */
     public UCSChainFile(String pathname, String buildFrom, String buildTo) throws IOException {
-        super(pathname,buildFrom,buildTo);
+        super(pathname, buildFrom, buildTo);
         if (buildFrom == null || buildTo == null) {
             throw new IllegalArgumentException("Build versions cannot null");
         }
-        if (!this.exists()) {
+        if (!exists()) {
             throw new IOException("File Does not exist");
         }
     }
@@ -125,6 +115,44 @@ public class UCSChainFile extends ChainFile {
         }
 
         return path;
+    }
+
+    /**
+     * This method takes a url pointing to a chainfile hosted on a remote server, and attempts to download the file.
+     * The file is saved as a temp file.
+     * Note:
+     * There is no cleanup after this method, and the temp file is not deleted once all references to it are gone
+     *
+     * @param url       Url to a chainFile
+     * @param buildFrom Starting GenomeBuild
+     * @param buildTo   Target GenomeBuild
+     * @return ChainFile
+     * @throws IOException
+     */
+    private static ChainFile fromUrl(URL url, String buildFrom, String buildTo) throws IOException {
+        if (url == null) {
+            throw new IllegalArgumentException("url cannot be null");
+        }
+
+        InputStream stream;
+        InputStream inStream = url.openStream();
+        if (url.getPath().endsWith(".gz")) {
+            GZIPInputStream gzipInputStream = new GZIPInputStream(inStream);
+            stream = gzipInputStream;
+        } else {
+            stream = inStream;
+        }
+
+        File temp = File.createTempFile("chain", "temp");
+        FileOutputStream fileOutputStream = new FileOutputStream(temp);
+        byte[] bytes = new byte[1024];
+        int read = 0;
+
+        while ((read = stream.read(bytes)) != -1) {
+            fileOutputStream.write(bytes, 0, read);
+        }
+        fileOutputStream.close();
+        return fromFile(temp, buildFrom, buildTo);
     }
 
     /**
@@ -167,45 +195,6 @@ public class UCSChainFile extends ChainFile {
         URL url = new URL(String.format(UCSC_REMOTE_TEMPLATE, buildFrom, fileName));
 
         return fromUrl(url, buildFrom, buildTo);
-    }
-
-
-    /**
-     * This method takes a url pointing to a chainfile hosted on a remote server, and attempts to download the file.
-     * The file is saved as a temp file.
-     * Note:
-     * There is no cleanup after this method, and the temp file is not deleted once all references to it are gone
-     *
-     * @param url       Url to a chainFile
-     * @param buildFrom Starting GenomeBuild
-     * @param buildTo   Target GenomeBuild
-     * @return ChainFile
-     * @throws IOException
-     */
-    private static ChainFile fromUrl(URL url, String buildFrom, String buildTo) throws IOException {
-        if (url == null) {
-            throw new IllegalArgumentException("url cannot be null");
-        }
-
-        InputStream stream;
-        InputStream inStream = url.openStream();
-        if (url.getPath().endsWith(".gz")) {
-            GZIPInputStream gzipInputStream = new GZIPInputStream(inStream);
-            stream = gzipInputStream;
-        } else {
-            stream = inStream;
-        }
-
-        File temp = File.createTempFile("chain", "temp");
-        FileOutputStream fileOutputStream = new FileOutputStream(temp);
-        byte[] bytes = new byte[1024];
-        int read = 0;
-
-        while ((read = stream.read(bytes)) != -1) {
-            fileOutputStream.write(bytes, 0, read);
-        }
-        fileOutputStream.close();
-        return fromFile(temp, buildFrom, buildTo);
     }
 
 }
