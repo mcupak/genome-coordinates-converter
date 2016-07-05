@@ -1,4 +1,4 @@
-# genome-coordinates-converter
+# Genome Coordinates Converter [![Build Status](https://travis-ci.org/mcupak/genome-coordinates-converter.svg?branch=develop)](https://travis-ci.org/mcupak/genome-coordinates-converter) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/mcupak/genome-coordinates-converter/develop/LICENSE)
 
 Java wrapper for performing liftOvers on genomic coordinates. The wrapper provides easy to use methods for converting genomic coordinates from one build version to another. Additionally, it is pre-configured to offer support for the most common conversions.
 
