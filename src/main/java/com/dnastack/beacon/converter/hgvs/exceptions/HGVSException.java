@@ -13,14 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.dnastack.beacon.liftover.util;
+package com.dnastack.beacon.converter.hgvs.exceptions;
 
 /**
- * @author patrickmagee
+ * @author patmagee
  */
-public class LiftOverException extends Exception {
-
-    public LiftOverException(String msg) {
+public class HGVSException extends Exception {
+    public HGVSException(String msg) {
         super(msg);
     }
 }

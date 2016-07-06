@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.dnastack.beacon.liftover.ucsc;
+package com.dnastack.beacon.converter.liftover.ucsc;
 
-import com.dnastack.beacon.liftover.api.LiftOver;
-import com.dnastack.beacon.liftover.util.GenomeBuild;
-import com.dnastack.beacon.liftover.util.LiftOverException;
+import com.dnastack.beacon.converter.liftover.api.LiftOver;
+import com.dnastack.beacon.converter.util.GenomeBuild;
+import com.dnastack.beacon.converter.liftover.exception.LiftOverException;
 import htsjdk.samtools.util.Interval;
 import org.junit.Before;
 import org.junit.Test;

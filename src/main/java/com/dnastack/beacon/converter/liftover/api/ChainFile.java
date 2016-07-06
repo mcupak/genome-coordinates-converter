@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.dnastack.beacon.liftover.api;
+package com.dnastack.beacon.converter.liftover.api;
 
-import com.dnastack.beacon.liftover.util.GenomeBuild;
+import com.dnastack.beacon.converter.util.GenomeBuild;
 
 import java.io.File;
 
