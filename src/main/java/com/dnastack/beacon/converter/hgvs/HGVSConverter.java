@@ -54,14 +54,9 @@ public class HGVSConverter {
             HGVSToGenomicTaskOutput output = (HGVSToGenomicTaskOutput) runner.exec(task);
             List<GenomeInterval> intervals = output.parseOutput();
 
-            //Check to see if there was an error
-            for (GenomeInterval interval : intervals) {
-                if (interval.getError() != null) {
-                    throw new HGVSException(interval.getError());
-                }
-            }
             return intervals;
         } catch (IOException e) {
+            e.printStackTrace();
             throw new HGVSException("There was an error while executing the conversion");
         }
 

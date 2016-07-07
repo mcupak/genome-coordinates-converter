@@ -22,7 +22,7 @@ package com.dnastack.beacon.converter.util;
  */
 public enum GenomeBuild {
 
-    HG17("hg17", 17), HG18("hg18", 18), HG19("hg19", 19), HG38("hg38", 38);
+    HG17("hg17", 17), HG18("hg18", 18), HG19("hg19", 19), HG38("hg38", 38), GRCH37("GRCh37", 37);
 
     private final int build;
     private final String buildName;

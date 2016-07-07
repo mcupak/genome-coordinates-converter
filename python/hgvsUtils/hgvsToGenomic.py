@@ -25,7 +25,7 @@ def getReference(ac):
 #
 #
 def main(args):
-    if len(args) < 1:
+    if len(args) < 2:
         sys.exit(1)
 
     parser = hgvs.parser.Parser()
@@ -39,22 +39,15 @@ def main(args):
 
         try:
             var = parser.parse_hgvs_variant(arg)
-        except:
-            throwResposne = [dict(error="%s is an invalid HGVS variant" % (arg), variant=arg)]
-            print json.dumps(throwResposne)
-            sys.exit(0)
+            if var.type == "c":
+                var = variantmapper.c_to_g(var)
+            elif var.type == "n":
+                var = variantmapper.n_to_g(var)
 
-        if var.type == "c":
-            var = variantmapper.c_to_g(var)
-        elif var.type == "n":
-            var = variantmapper.n_to_g(var)
-
-        try:
             validator.validate(var)
         except:
-            throwResposne = [dict(error="%s is an invalid HGVS variant" % (arg), variant=arg)]
-            print json.dumps(throwResposne)
-            sys.exit(0)
+            conversions.append(dict(error="%s is an invalid HGVS variant" % (arg), variant=arg))
+            continue
 
         chr = getReference(var.ac)
         interval = var.posedit.pos
