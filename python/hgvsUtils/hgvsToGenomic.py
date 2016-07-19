@@ -25,7 +25,7 @@ def getReference(ac):
 #
 #
 def main(args):
-    if len(args) < 2:
+    if len(args) < 1:
         sys.exit(1)
 
     parser = hgvs.parser.Parser()

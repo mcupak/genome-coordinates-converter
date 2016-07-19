@@ -44,15 +44,24 @@ public class HGVSConverterTest {
         }
     }
 
-    @Test(expected = HGVSException.class)
-    public void testInvalidHGVSThrowsError() throws HGVSException {
-        HGVSConverter.hgvsToGenomic("ASDASDASDASD");
+    @Test
+    public void testInvalidHGVSIsError() throws HGVSException {
+        assertNotNull(HGVSConverter.hgvsToGenomic("ASDASDASDASD").getError());
     }
 
-    @Test(expected = HGVSException.class)
-    public void testInvalidHGVSInListThrowsError() throws HGVSException {
+    @Test
+    public void testInvalidHGVSInListIsError() throws HGVSException {
         List<String> hgvss = Arrays.asList("NM_182763.2:c.688+403C>T", "NM_182763.2:c.688+403C>T", "INVALID");
         List<GenomeInterval> intervals = HGVSConverter.hgvsToGenomic(hgvss);
+        assertTrue(intervals.size() == 3);
+        for (int i = 0; i < intervals.size(); i++ ){
+            GenomeInterval interval = intervals.get(i);
+            if (i == intervals.size() - 1){
+                assertNotNull(interval.getError());
+            } else {
+                assertNull(interval.getError());
+            }
+        }
     }
 
     @Test(expected = NullPointerException.class)

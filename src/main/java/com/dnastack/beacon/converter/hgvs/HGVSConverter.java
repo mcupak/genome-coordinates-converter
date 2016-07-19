@@ -56,8 +56,7 @@ public class HGVSConverter {
 
             return intervals;
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new HGVSException("There was an error while executing the conversion");
+            throw new HGVSException(e.getMessage());
         }
 
     }
