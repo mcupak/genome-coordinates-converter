@@ -9,3 +9,7 @@ buildNumber.properties
 .mvn/timing.properties
 .idea
 *.iml
+
+*.egg
+PKG-INFO
+**/*egg-info/
