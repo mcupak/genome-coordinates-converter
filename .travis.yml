@@ -1,8 +1,10 @@
 language: java
-sudo: false
+sudo: required
 jdk:
   - oraclejdk8
 branches:
   only:
     - master
     - develop
+install:
+  - sudo python python/hgvsUtils/setup.py install

@@ -1,19 +1,27 @@
 # Genome Coordinates Converter [![Build Status](https://travis-ci.org/mcupak/genome-coordinates-converter.svg?branch=develop)](https://travis-ci.org/mcupak/genome-coordinates-converter) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/mcupak/genome-coordinates-converter/develop/LICENSE)
 
-Java wrapper for performing liftOvers on genomic coordinates. The wrapper provides easy to use methods for converting genomic coordinates from one build version to another. Additionally, it is pre-configured to offer support for the most common conversions.
-
+Java wrapper for performing various conversions between common identifiers.
 
 ## Requirements
 
 - Java 8
+- Python
+- hgvs python package
 
+### Converters:
+    - Liftover
+    - HGVS to Genomic Coordinates
 
-## Chain Files
+### LiftOver
+
+liftOvers on genomic coordinates. The wrapper provides easy to use methods for converting genomic coordinates from one build version to another. Additionally, it is pre-configured to offer support for the most common conversions.
+
+##### Chain Files
 
 LiftOvers can be performed easily by either using the predefined liftovers, or by supplying a custom chain file. Chain files are written in the [Chain Format](https://genome.ucsc.edu/goldenpath/help/chain.html) from UCSC. A large number of chainfiles are publicly available to download [here](http://hgdownload.cse.ucsc.edu/downloads.html),
 
 
-## Basic Usage
+##### Basic Usage
 
 ```java
     try {
@@ -27,7 +35,7 @@ LiftOvers can be performed easily by either using the predefined liftovers, or b
     }
 ```
 
-## Using a Custom Chain File
+##### Using a Custom Chain File
 
 ```java
    try {
@@ -46,7 +54,7 @@ LiftOvers can be performed easily by either using the predefined liftovers, or b
    
 ```
 
-## Built in LiftOvers
+##### Built in LiftOvers
 
 Several liftovers have been included
 
@@ -61,3 +69,37 @@ Several liftovers have been included
 | hg19 | hg18 |
 | hg19 | hg38 |
 | hg38 | hg19 |
+
+
+## HGVS to Genomic Coordinate Converter
+The HGVS to genomic coordinate converter offers a thin wrapper around the hgvs python package for your java project. It will take any valid HGVS and convert it to genomic
+positions.
+
+##### Installing HGVS
+
+In order to use this pacakage you must first install both python and HGVS on the computer you will be running this.
+
+Use pip to install hgvs:
+
+```
+pip install hgvs
+```
+
+If you are using OSX and run into a problem while installing hgvs, you may need to install supporting postgresql libraries:
+
+```
+brew install postgresql
+```
+
+##### Basic Usage
+
+```
+
+try { 
+    String hgvs = "NM_182763.2:c.688+403C>T"
+    GenomeInterval interval = HGVSConverter.hgvsToGenomic(hgvs);
+} catch(HGVSException e){
+    e.printStackTrace();
+}
+
+```

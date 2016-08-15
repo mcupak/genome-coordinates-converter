@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.dnastack.beacon.liftover.ucsc;
+package com.dnastack.beacon.converter.liftover.ucsc;
 
-import com.dnastack.beacon.liftover.api.ChainFile;
-import com.dnastack.beacon.liftover.util.GenomeBuild;
+import com.dnastack.beacon.converter.liftover.api.ChainFile;
+import com.dnastack.beacon.converter.util.GenomeBuild;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
