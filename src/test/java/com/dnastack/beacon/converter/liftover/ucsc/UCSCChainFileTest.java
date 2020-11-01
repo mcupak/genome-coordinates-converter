@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author patrickmagee
@@ -35,7 +36,7 @@ public class UCSCChainFileTest {
 
     private static final String FILE_NAME = "hg38ToHg19.over.chain";
     private static final String FILE_PATH = "src/main/resources/chains/hg38/" + FILE_NAME;
-    private static final String BUIILD_FROM = "hg38";
+    private static final String BUILD_FROM = "hg38";
     private static final String BUILD_TO = "hg19";
 
     @Test(expected = IllegalArgumentException.class)
@@ -72,25 +73,25 @@ public class UCSCChainFileTest {
     @Test
     public void testFromFile() throws IOException {
         File file = new File(FILE_PATH);
-        ChainFile chainFile = UCSChainFile.fromFile(file, BUIILD_FROM, BUILD_TO);
+        ChainFile chainFile = UCSChainFile.fromFile(file, BUILD_FROM, BUILD_TO);
         assertEquals(chainFile.getName(), FILE_NAME);
-        assertEquals(chainFile.isFile(), true);
-        assertEquals(chainFile.getBuildFrom(), BUIILD_FROM);
+        assertTrue(chainFile.isFile());
+        assertEquals(chainFile.getBuildFrom(), BUILD_FROM);
         assertEquals(chainFile.getBuildTo(), BUILD_TO);
 
     }
 
     @Test
     public void testFromUCSCRemote() throws IOException {
-        ChainFile chainFile = UCSChainFile.fromUCSCRemote(BUIILD_FROM, BUILD_TO, FILE_NAME + ".gz");
+        ChainFile chainFile = UCSChainFile.fromUCSCRemote(BUILD_FROM, BUILD_TO, FILE_NAME + ".gz");
         assertEquals(chainFile.getBuildTo(), BUILD_TO);
-        assertEquals(chainFile.getBuildFrom(), BUIILD_FROM);
+        assertEquals(chainFile.getBuildFrom(), BUILD_FROM);
 
     }
 
     @Test(expected = FileNotFoundException.class)
     public void testFromUCSCRemoteError() throws IOException {
-        ChainFile chainFile = UCSChainFile.fromUCSCRemote("ERROR", BUIILD_FROM, FILE_NAME + ".gz");
+        ChainFile chainFile = UCSChainFile.fromUCSCRemote("ERROR", BUILD_FROM, FILE_NAME + ".gz");
     }
 
 }
